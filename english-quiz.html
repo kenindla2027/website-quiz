@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Quiz — Semua Soal (Aesthetic)</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#f7f2ff;
+    --bg2:#fff2f0;
+    --card:#ffffff;
+    --muted:#6b6b6b;
+    --accent1: linear-gradient(90deg,#FFB199,#FF77A9);
+    --accent2: linear-gradient(90deg,#A8E6CF,#FFD3B6);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    background: linear-gradient(135deg,#fffaf0 0%, #f7f2ff 50%, #eef9ff 100%);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px;
+  }
+  .wrap{
+    width:100%;
+    max-width:980px;
+    background:rgba(255,255,255,0.85);
+    border-radius:20px;
+    padding:22px;
+    box-shadow:0 20px 50px rgba(17,24,39,0.08);
+    backdrop-filter: blur(6px);
+  }
+  header{
+    text-align:center;
+    margin-bottom:8px;
+  }
+  h1{
+    margin:0;
+    font-size:20px;
+    letter-spacing:0.2px;
+    color:#222;
+    font-weight:600;
+  }
+  p.lead{
+    margin:6px 0 18px;
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  .meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:12px;
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  #progress{
+    width:100%;
+    height:12px;
+    background:#f0f0f0;
+    border-radius:999px;
+    overflow:hidden;
+    margin-bottom:18px;
+  }
+  #progress > div{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#FFC1C1,#FFD1E6);
+    transition:width .45s ease;
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:14px;
+    padding:18px;
+    box-shadow:0 8px 30px rgba(17,24,39,0.04);
+  }
+
+  .story-tag{
+    display:inline-block;
+    background:#fff0f6;
+    color:#9b2c66;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:12px;
+    margin-bottom:10px;
+  }
+
+  .question{
+    font-size:16px;
+    font-weight:600;
+    margin:4px 0 12px;
+    color:#222;
+    line-height:1.45;
+  }
+  .question small{display:block;font-weight:400;color:var(--muted);margin-top:6px;font-size:13px}
+
+  .options{display:flex;flex-direction:column;gap:8px}
+  .option{
+    background:#fbfbfb;
+    border-radius:10px;
+    padding:12px 14px;
+    cursor:pointer;
+    border:2px solid transparent;
+    transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+    font-size:14px;
+    color:#222;
+  }
+  .option:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(17,24,39,0.06)}
+  .option.correct{
+    background: #e8ffef !important;
+    border-color:#26a65b !important;
+    box-shadow:0 10px 28px rgba(38,166,91,0.12);
+    color:#0c5a2f;
+  }
+  .option.wrong{
+    background:#fff0f0 !important;
+    border-color:#f25656 !important;
+    box-shadow:0 10px 28px rgba(242,86,86,0.12);
+    color:#7b1e1e;
+  }
+
+  .feedback{
+    margin-top:12px;
+    min-height:22px;
+    font-size:14px;
+  }
+  .fb-good{display:inline-block;padding:6px 10px;border-radius:999px;background:#e9fff0;color:#10663a;font-weight:600}
+  .fb-bad{display:inline-block;padding:6px 10px;border-radius:999px;background:#ffecec;color:#9b2c2c;font-weight:600}
+
+  .controls{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-top:16px;
+  }
+  .btn{
+    border:0;
+    padding:10px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    background:linear-gradient(90deg,#FFB199,#FF77A9);
+    color:#fff;
+    box-shadow:0 10px 30px rgba(255,119,169,0.12);
+  }
+  .btn-muted{background:#f3f3f3;color:#444;box-shadow:none}
+  .result{
+    text-align:center;
+    margin-top:14px;
+    display:none;
+  }
+  .result h2{margin:6px 0;font-size:18px}
+  .result p{margin:0;color:var(--muted)}
+
+  @media (max-width:700px){
+    .wrap{padding:16px}
+    .question{font-size:15px}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <header>
+      <h1>✨ Aesthetic Quiz — Semua Soal</h1>
+      <p class="lead">Klik jawaban untuk melihat langsung Benar / Salah. Semua soal dimasukkan tanpa mengubah teks aslinya. Nomor soal mulai dari 1.</p>
+    </header>
+
+    <div class="meta">
+      <div id="qcount">Soal 1 / 44</div>
+      <div id="scoremini">Skor: 0</div>
+    </div>
+
+    <div id="progress"><div></div></div>
+
+    <div class="card">
+      <div id="storyTag" class="story-tag" style="display:none"></div>
+      <div id="questionArea"></div>
+      <div id="optionsArea" class="options"></div>
+      <div id="feedback" class="feedback"></div>
+
+      <div class="controls" style="margin-top:14px">
+        <button id="prevBtn" class="btn btn-muted" style="opacity:0.0;pointer-events:none">Sebelumnya</button>
+        <div style="display:flex;gap:8px">
+          <button id="skipBtn" class="btn btn-muted">Lewati</button>
+          <button id="restartBtn" class="btn" style="display:none">🔁 Ulangi Quiz</button>
+        </div>
+      </div>
+
+      <div class="result" id="resultBox">
+        <h2 id="resultScore"></h2>
+        <p id="resultMsg"></p>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+/*
+  Semua soal dimasukkan di bawah. Kunci jawaban telah saya isi otomatis (opsi: 'a'/'b'/'c'/'d').
+  Nomor soal akan ditampilkan mulai dari 1..N.
+*/
+
+const quizData = [
+  // (1) corresponds to original first question in the provided block (originally numbered 18)
+  {
+    q: `18. What is the characteristic of the rose?`,
+    opts: [
+      `a. Kindhearted`,
+      `b. Conceited`,
+      `c. Humble`,
+      `d. Modest`
+    ],
+    answer: 'b',
+    tag: ''
+  },
+  {
+    q: `19. What is the moral lesson of the story?
+    HOTS`,
+    opts: [
+      `a. Never judge anyone by the way they look.`,
+      `b. Never despise what we can't have; nothing comes easy.`,
+      `c. Greed will always lead to downfall.`,
+      `d. Never act before you think.`
+    ],
+    answer: 'a',
+    tag: ''
+  },
+  {
+    q: `20. Pay attention to the picture below!
+    [Gambar singa di hutan dengan dialog]
+    What direct speech is said by the lion?
+    HOTS`,
+    opts: [
+      `a. "Another lion in my jungle? I'll jump and fight him to show my strength."`,
+      `b. "From now on, all the animals in this jungle should provide me foods."`,
+      `c. "Take me to the lion's den!"`,
+      `d. "I can't see another lion here!"`
+    ],
+    answer: 'a',
+    tag: ''
+  },
+  {
+    q: `21. Other ducks didn't want to play and be friend with the Ugly Duckling. The other ducks would mock and cast the ugly duckling out.
+    Based on the passage above, which direct speech might the other ducks say to the Ugly Duckling? HOTS`,
+    opts: [
+      `a. "Don't be afraid, duck."`,
+      `b. "Why won't they let me stay here?"`,
+      `c. "Haha! You're ugly. Just go away!"`,
+      `d. "No one ever wants me."`
+    ],
+    answer: 'c',
+    tag: ''
+  },
+  {
+    q: `22. The grasshopper mocked the ant who worked hard during the summer. The grasshopper just got rested and didn't think of the future days.
+    The trait of the grasshopper was ....`,
+    opts: [
+      `a. arrogant`,
+      `b. lazy`,
+      `c. careless`,
+      `d. naughty`
+    ],
+    answer: 'b',
+    tag: ''
+  },
+  {
+    q: `23. So, once, there live Malin Kundang left her mother in the village to work in a big ship. Years later, when Malin Kundang went back to his village, he didn't admit his mother. Malin Kundang even casted out his mother away. The mother went back home crying. How was the feeling of the mother?`,
+    opts: [
+      `a. Happy`,
+      `b. Content`,
+      `c. Joyful`,
+      `d. Sorrowful`
+    ],
+    answer: 'd',
+    tag: ''
+  },
+  {
+    q: `24. In a kingdom, there lived a king and his daughter, Dewi Candra Kirana. The King married to Dewi Galuh after his wife died. Dewi Galuh was envy to Dewi Candra Kirana of her beauty and kindness. Dewi Galuh asked a witch to turn Dewi Candra Kirana to a snail.
+    The trait of the Dewi Galuh was ....`,
+    opts: [
+      `a. envious`,
+      `b. boastful`,
+      `c. egotistic`,
+      `d. short tempered`
+    ],
+    answer: 'a',
+    tag: ''
+  },
+  {
+    q: `25. My friends ... their decorative bicycle for the parade.`,
+    opts: [
+      `a. ride`,
+      `b. ridden`,
+      `c. rode`,
+      `d. riding`
+    ],
+    answer: 'c',
+    tag: ''
+  },
+  {
+    q: `26. The traditional dancers ... excited to dance on the stage of the cultural performance.`,
+    opts: [
+      `a. is`,
+      `b. are`,
+      `c. was`,
+      `d. were`
+    ],
+    answer: 'b',
+    tag: ''
+  },
+  {
+    q: `27. Mitha ... join the parade last week because she was getting influenza.`,
+    opts: [
+      `a. wasn't`,
+      `b. weren't`,
+      `c. doesn't`,
+      `d. didn't`
+    ],
+    answer: 'd',
+    tag: ''
+  },
+  {
+    q: `28. Last year, I ... the flag raiser in the flag hoisting ceremony in my school.`,
+    opts: [
+      `a. become`,
+      `b. became`,
+      `c. becoming`,
+      `d. becomes`
+    ],
+    answer: 'b',
+    tag: ''
+  },
+  {
+    q: `29. Fikri ... very happy when his team won the tandem race.`,
+    opts: [
+      `a. is`,
+      `b. are`,
+      `c. was`,
+      `d. were`
+    ],
+    answer: 'c',
+    tag: ''
+  },
+
+  // Image 2 (Halaman 55) — Bees & Beetles
+  {
+    q: `Far away on the hills, there was a forest full of many different trees and plants. Different kinds of animals, birds, and insects lived in the forest. There was a huge beehive on a tall tree. The Bees were always busy collecting honey and filling their combs. On another old tree, close to the tree with the beehive, was a colony of Beetles. They lived in the tree trunk.
+    The Bees and Beetles were very good neighbors. They never troubled each other and always went their own ways. They lived peacefully with each other.
+    Every day, the friendly Bees invited the Beetles for dinner. The Beetles arrived and dinner was served. The Bees offered the Beetles some of the best honey that they had. The Beetles didn't like the taste of honey. They barely ate anything and then flew away.
+    The next day, all the Beetles invited the Bees over for dinner. A big full of dung was served to the Bees. The Bees could not eat even a single bite. They remained hungry and flew back home.`,
+    opts: [],
+    answer: '',
+    tag: 'Image 2 (Halaman 55) — TEXT (informational)'
+  },
+  {
+    q: `11. What is the first paragraph called?`,
+    opts: [
+      `a. Conclusion`,
+      `b. Orientation`,
+      `c. Argument`,
+      `d. Events`
+    ],
+    answer: 'b',
+    tag: ''
+  },
+  {
+    q: `12. What did the Bees do when the dung was served?`,
+    opts: [
+      `a. They could not eat the dung.`,
+      `b. They ate the dung.`,
+      `c. They gave honey to the Beetles.`,
+      `d. They were angry to the Beetles.`
+    ],
+    answer: 'a',
+    tag: ''
+  },
+  {
+    q: `13. Which one is false based on the text?`,
+    opts: [
+      `a. The Bees lived in a big beehive in a tall tree.`,
+      `b. The Bees was annoying neighbor for the Beetles.`,
+      `c. The Beetles invited the Bees over for dinner the day after they were invited by the Bees.`,
+      `d. The Bees didn't eat what the Beetles offered to them.`
+    ],
+    answer: 'b',
+    tag: ''
+  },
+  {
+    q: `14. The trait of the Bees and Beetles are ....`,
+    opts: [
+      `a. friendly`,
+      `b. unsociable`,
+      `c. mindful`,
+      `d. ignorant`
+    ],
+    answer: 'a',
+    tag: ''
+  },
+  {
+    q: `15. What is the moral lesson of the story?
+    HOTS`,
+    opts: [
+      `a. People can have different preference, but still they can be good friends.`,
+      `b. Even the lazy think of good ideas, when they are hungry.`,
+      `c. Learn from your friends and from everything else around you.`,
+      `d. Good deeds done for a selfish motive, are not worthy of praise.`
+    ],
+    answer: 'a',
+    tag: ''
+  },
+
+  // Rose & Cactus passage (16-18)
+  {
+    q: `Once upon a time, in a desert far away, there was a rose who was so proud of her beautiful looks. Her only complaint was growing next to an ugly cactus.
+    Everyday, the beautiful rose would insult and mock the cactus on his looks, while the cactus remained quiet. All the other plants nearby tried to make the rose see sense, but she was too swayed by her own looks.
+    One scorching summer, the desert became dry, and there was no water left for the plants. The rose quickly began to wilt. Her beautiful petals dried up, losing their lush color.
+    Looking to the cactus, she saw a sparrow dip his beak into the cactus to drink some water. Though ashamed, the rose asked the cactus if she could have some water. The kind cactus readily agreed, helping them both through the tough summer, as friends.
+    Adapted from: https://momlovesbest.com/`,
+    opts: [],
+    answer: '',
+    tag: 'Rose & Cactus — passage'
+  },
+  {
+    q: `16. What is the social function of the text?
+    HOTS`,
+    opts: [
+      `a. To retell an experience`,
+      `b. To describe an animal`,
+      `c. To entertain the readers`,
+      `d. To instruct in doing something`
+    ],
+    answer: 'c',
+    tag: ''
+  },
+  {
+    q: `17. The rose complained because ....`,
+    opts: [
+      `a. she grew next to a cactus`,
+      `b. she didn't want to live in the dessert`,
+      `c. the cactus remained quiet all the time`,
+      `d. the dessert became dry and there were no water left for the plants`
+    ],
+    answer: 'a',
+    tag: ''
+  },
+  {
+    q: `18. What might the rose feel when the rose asked some water from the cactus?`,
+    opts: [
+      `a. Embarrassed`,
+      `b. Defeated`,
+      `c. Overpowered`,
+      `d. Proud`
+    ],
+    answer: 'a',
+    tag: ''
+  },
+
+  // Image 3 (Halaman 54) — Maldonaldo listening 1-5
+  {
+    q: `Final Summative Assessment
+    1-5. Choose the right answer by crossing (x) a, b, c, or d!
+    Listen to the tape and complete the blanks number 1 to 5!
+
+    Listening script
+
+    Long, long ago, a girl named Maldonaldo lived in a village near the jungle. One night, invaders attacked their village. As night fell, she escaped into the jungle. (1) ... she heard with alarm the calls of wild animals. She thought of where she could safely sleep for the night. But there was one call that drew her closer. It was a cry of pain. ... (2) what she saw. It was that had just given birth. Maldonaldo helped the mother puma clean the cubs. Later she watched the babies while the mother went out to hunt. And so days went by.
+    One day, (3) and the mother puma was inside the cave with her cubs, the invaders who had been outcasted by the villagers. They captured her. The captain commanded to tie her to a tree and left there for wild animals to devour. After several days, ... (4) to look for Maldonaldo. Much to their surprise they found her still tied to the tree and very much alive. Much more surprised were they to learn that it was the mother puma ... (5) the girl all that time.`,
+    opts: [],
+    answer: '',
+    tag: 'Maldonaldo — listening passage'
+  },
+  {
+    q: `1. a. She was sad and lonely.
+       b. She sat under a tree and slept.
+       c. She walked for hours.
+       d. She went into the deep forest.`,
+    opts: [
+      `a. She was sad and lonely.`,
+      `b. She sat under a tree and slept.`,
+      `c. She walked for hours.`,
+      `d. She went into the deep forest.`
+    ],
+    answer: 'c',
+    tag: ''
+  },
+  {
+    q: `2. a. She walked further
+       b. She was scared and went to a place
+       c. She found a big cave
+       d. She followed the sound to a cave`,
+    opts: [
+      `a. She walked further`,
+      `b. She was scared and went to a place`,
+      `c. She found a big cave`,
+      `d. She followed the sound to a cave`
+    ],
+    answer: 'd',
+    tag: ''
+  },
+  {
+    q: `3. a. while Maldonlado was gathering food
+       b. Maldonado tried to go to the village
+       c. the mother puma left the cave
+       d. a village met Maldonlado`,
+    opts: [
+      `a. while Maldonlado was gathering food`,
+      `b. Maldonado tried to go to the village`,
+      `c. the mother puma left the cave`,
+      `d. a village met Maldonlado`
+    ],
+    answer: 'a',
+    tag: ''
+  },
+  {
+    q: `4. a. Maldonado felt very weak
+       b. the villagers went into the jungle
+       c. the invader came back to the jungle
+       d. the mother puma helped Maldonaldo`,
+    opts: [
+      `a. Maldonado felt very weak`,
+      `b. the villagers went into the jungle`,
+      `c. the invader came back to the jungle`,
+      `d. the mother puma helped Maldonaldo`
+    ],
+    answer: 'b',
+    tag: ''
+  },
+  {
+    q: `5. a. who supported and helped
+       b. who released and guarded
+       c. who had fed and protected
+       d. who took care of`,
+    opts: [
+      `a. who supported and helped`,
+      `b. who released and guarded`,
+      `c. who had fed and protected`,
+      `d. who took care of`
+    ],
+    answer: 'c',
+    tag: ''
+  },
+
+  // Panjat Pinang (6-9)
+  {
+    q: `The following text is for questions 6 to 10:
+
+    Last year, Reno, Tian, and Aldi participated in the panjat pinang. The game was held to celebrate the Indonesian Independence Day. Reno, Tian, and Aldi were in a team. Before they started to climb the palm tree, they cheered by yelling "go". Reno was the first person because he had big body. He hugged the tree tightly and firmed his position steadily. Then. Tian started to climb on Reno's back. He stood on Reno's shoulder firmly. After that, Aldi climbed Reno and Tian's back. Then, he continued to climb the tree to the top. We struggled to climb because the tree was covered in oil. Once Aldi got on the top, he grabbed some gifts and threw them on the ground. Finally, they cleaned up themselves with clean water. They were really happy to be able to participate in the game.`,
+    opts: [],
+    answer: '',
+    tag: 'Panjat Pinang — passage'
+  },
+  {
+    q: `6. What experience is told by the text?`,
+    opts:[
+      `a. Getting prize in a parade.`,
+      `b. Watching a panjat pinang game.`,
+      `c. Participating in a panjat pinang game.`,
+      `d. Being a team for a school project.`
+    ],
+    answer: 'c',
+    tag:''
+  },
+  {
+    q: `7. What did they do before they start climbing the palm tree?`,
+    opts:[
+      `a. They cheered by yelling "go".`,
+      `b. They had a little pray.`,
+      `c. They made a strategy.`,
+      `d. They watched some tutorial videos.`
+    ],
+    answer: 'a',
+    tag:''
+  },
+  {
+    q: `8. Why did they struggle to climb the tree?`,
+    opts:[
+      `a. Because the tree was so tall.`,
+      `b. Because they were short.`,
+      `c. Because they didn't know how to climb.`,
+      `d. Because the tree was covered in oil.`
+    ],
+    answer: 'd',
+    tag:''
+  },
+  {
+    q: `9. What did Aldi do on top of the tree?`,
+    opts:[
+      `a. He grabbed the flag.`,
+      `b. He grabbed some gifts and threw them on the ground.`,
+      `c. He sang national anthem.`,
+      `d. He pulled Tian up to the top.`
+    ],
+    answer: 'b',
+    tag:''
+  },
+
+  // Image 4 (Halaman bawah) — Bawang Merah & Ant/Dove
+  {
+    q: `19. Bawang Merah always ordered Bawang Putih to do the house chores. Bawang Merah's trait is ....`,
+    opts:[
+      `a. honest`,
+      `b. friendly`,
+      `c. bossy`,
+      `d. sincere`
+    ],
+    answer: 'c',
+    tag:''
+  },
+  {
+    q: `20. The ant slipped in the river. A dove saw the ant and gave a leaf to help him. The ant might feel ....`,
+    opts:[
+      `a. cheerful`,
+      `b. miserable`,
+      `c. grateful`,
+      `d. merry`
+    ],
+    answer: 'c',
+    tag:''
+  },
+
+  // The Ant and The Grasshopper (text preface)
+  {
+    q: `The Ant and The Grasshopper
+
+    Once there lived an ant and a grasshopper in a grassy meadow. All day long the ant would work hard, collecting grains of wheat from the farmer's field far away. She would hurry to the field every morning, as soon as it was light enough to see by.
+    And she would toil back with a heavy grain of wheat balanced on her head. She would put the grain of wheat carefully away in her larder, and then hurry back to the field for another one. All day long she would work without stop or rest, scurrying back and forth from the field. She was determined collecting the grains of wheat and storing them carefully in her larder.
+    The grasshopper would look at her and laugh. "Why do you work so hard, dear ant?" he would say. "Come, rest a while, listen to my song. Summer is here, the days are long and bright. Why waste the sunshine in labour and toil?" The grasshopper mocked the ant impolitely.`,
+    opts: [],
+    answer: '',
+    tag:'The Ant and The Grasshopper — passage'
+  },
+
+  // Image 5 (Hungry Fox) — question 9,10 (these numbers correspond to the ones in original)
+  {
+    q: `9. Which of the followings is true based on the text?`,
+    opts:[
+      `a. The lion liked the crowing of cocks.`,
+      `b. The elephant thought that the crowing of cocks could hurt the lion.`,
+      `c. The elephant feared of the mosquito.`,
+      `d. Seeing the mosquito, the lion started to fear it too.`
+    ],
+    answer: 'c',
+    tag:''
+  },
+  {
+    q: `10. The moral lesson of the story is .... HOTS`,
+    opts:[
+      `a. If you keep lying, no one will believe you even if you are speaking the truth, so we must always speak the truth`,
+      `b. don't compare two different situations without understanding them`,
+      `c. if we could see our fears as others see them we would realize that most of our fears make no sense`,
+      `d. always trust your own wit and try judge the circumstance`
+    ],
+    answer: 'c',
+    tag:''
+  },
+
+  // The Hungry Fox passage + questions 11-15 (note: numbers in original repeat; we're keeping order)
+  {
+    q: `The Hungry Fox
+
+    Once upon a time, there was a hungry fox. He was looking something to eat. He was very, very hungry.
+    He explored the entire forest but in vain. Finally, he went to the edge of the forest and started searching for food. Suddenly, he caught sight of a big tree with the hole in it. Inside the hole, there was a package with delicious smell. The hungry fox immediately thought that there might be food in it and became very happy. He jumped into the hole without thinking the later consequences.
+    When he opened the package, he saw slices of bread, meat, and other food in it. He was very amazed. His mouth was watering already. The fox went deep inside the tree trunk and began to eat the food. After the fox finished eating the food, he felt very thirsty and decided to leave the hole. He poked out his head out but he was stuck on the stomach. No matter how hard he tried, he could not get out of the hole. The hungry fox had eaten so much food that he became too big to fit through the hole.
+    The fox was very sad and upset. He sadly said to himself that he should have thought a little before jumping into the hole. You know that if you are too greedy, you can get trapped as well.`,
+    opts:[],
+    answer:'',
+    tag:'The Hungry Fox — passage'
+  },
+  {
+    q: `11. The exposition of the text above is on paragraph ....`,
+    opts:[
+      `a. one`,
+      `b. two`,
+      `c. three`,
+      `d. four`
+    ],
+    answer: 'a',
+    tag:''
+  },
+  {
+    q: `12. What is the setting place of the story?`,
+    opts:[
+      `a. Beach`,
+      `b. Mountain`,
+      `c. Forest`,
+      `d. City`
+    ],
+    answer: 'c',
+    tag:''
+  },
+  {
+    q: `13. What caused the fox happy?`,
+    opts:[
+      `a. He found a hole in a big tree.`,
+      `b. He got food package from a hunter.`,
+      `c. He could eat in the hoof of a big tree.`,
+      `d. He found a package of food in a hole of a big tree.`
+    ],
+    answer: 'd',
+    tag:''
+  },
+  {
+    q: `14. Why couldn't the fox get out of the hole?`,
+    opts:[
+      `a. Because he was trapped by the hunter.`,
+      `b. Because he became too big to fit through the hole.`,
+      `c. Because he slept inside the hole.`,
+      `d. Because the opening of the hole was closed by a package.`
+    ],
+    answer: 'b',
+    tag:''
+  },
+  {
+    q: `15. From the story, we can learn that .... HOTS`,
+    opts:[
+      `a. we should thinking the consequences of our action`,
+      `b. we should eat as much as we can to make us happy`,
+      `c. we should be aware of the hole of a big tree`,
+      `d. we can do whatever we want without thinking about what may happen next`
+    ],
+    answer: 'a',
+    tag:''
+  },
+
+  // Tortoise & Ugly Duckling & Timun Mas (16-18)
+  {
+    q: `16. Pay attention to the picture below!
+    [Gambar kura-kura dan kelinci]
+    What direct speech is said by the tortoise?
+    HOTS`,
+    opts:[
+      `a. "Go away, hare."`,
+      `b. "Finally I can prove that I can win."`,
+      `c. "Let's race to decide the winner."`,
+      `d. "Don't be too boastful, hare."`
+    ],
+    answer: 'd',
+    tag:''
+  },
+  {
+    q: `17. The ugly duckling ... gray and shy.`,
+    opts:[
+      `a. is`,
+      `b. are`,
+      `c. was`,
+      `d. were`
+    ],
+    answer: 'c',
+    tag:''
+  },
+  {
+    q: `18. Timun Mas ... as fast as she could to escape from Buto Ijo.`,
+    opts:[
+      `a. run`,
+      `b. runs`,
+      `c. ran`,
+      `d. running`
+    ],
+    answer: 'c',
+    tag:''
+  },
+
+  // Image 6 (Halaman 49) — Summative Assessment listening (lion/elephant) and 6-8
+  {
+    q: `Summative Assessment
+    I. Choose the right answer by crossing (x) a, b, c, or d!
+    Listen to the tape and answer the questions 1 to 5!
+
+    One evening, long ago the sun was setting. A wise old rooster flew up to his perch in a tree to get ready to sleep. Suddenly, ... (1) at the foot of the tree.
+    "The fox cunningly said that there had been a big meeting of all the animals and ... (2) in peace and harmony. The fox said that he wanted to show how he can be a cock-hurt you?"
+    One day he confessed his fear to the elephant who was greatly amused. "How can the crowing of a cock hurt you?" he asked. "Think about it."
+    Just then a mosquito began circling the elephant's head, frightening him out of his wits. "If it gets into my ear, I'm dead" said the elephant frantically, flailing at the insect with his trunk. Now it was the lion's turn to feel amused.`,
+    opts:[],
+    answer:'',
+    tag:'Lion & Mosquito — listening passage'
+  },
+  {
+    q: `1. a. a voice surprised him
+       b. a fox called him
+       c. he saw an animal running
+       d. he served an animal running`,
+    opts:[
+      `a. a voice surprised him`,
+      `b. a fox called him`,
+      `c. he saw an animal running`,
+      `d. he served an animal running`
+    ],
+    answer: 'a',
+    tag:''
+  },
+  {
+    q: `2. a. the rooster was invited
+       b. the wolf told about the news
+       c. they engaged to live as friends
+       d. they want to come`,
+    opts:[
+      `a. the rooster was invited`,
+      `b. the wolf told about the news`,
+      `c. they engaged to live as friends`,
+      `d. they want to come`
+    ],
+    answer: 'b',
+    tag:''
+  },
+  {
+    q: `3. a. it was an amazing news
+       b. it was not a good promise
+       c. the wolf fled to him
+       d. it was not a good promise`,
+    opts:[
+      `a. it was an amazing news`,
+      `b. it was not a good promise`,
+      `c. the wolf fled to him`,
+      `d. it was not a good promise`
+    ],
+    answer: 'b',
+    tag:''
+  },
+  {
+    q: `4. a. The wolf screamed all the way
+       b. The rooster smiled widely
+       c. The rooster smiled widely
+       d. the trickster is like one that is easily first`,
+    opts:[
+      `a. The wolf screamed all the way`,
+      `b. The rooster smiled widely`,
+      `c. The rooster smiled widely`,
+      `d. the trickster is like one that is easily first`
+    ],
+    answer: 'b',
+    tag:''
+  },
+  {
+    q: `5. a. trust that works is better than
+       b. a hundred doubtful plan
+       c. do not repay this is a friend indeed
+       d. don't play with a lion with evil`,
+    opts:[
+      `a. trust that works is better than`,
+      `b. a hundred doubtful plan`,
+      `c. do not repay this is a friend indeed`,
+      `d. don't play with a lion with evil`
+    ],
+    answer: 'a',
+    tag:''
+  },
+  {
+    q: `6. Which one is the suitable title for the text?
+       HOTS`,
+    opts:[
+      `a. Lion's Scared Lion`,
+      `b. Lion and His Fears`,
+      `c. Lion and His Friend`,
+      `d. The Fool Elephant`
+    ],
+    answer: 'b',
+    tag:''
+  },
+  {
+    q: `7. When the lion heard the crowing of cock, he might feel ....`,
+    opts:[
+      `a. scared`,
+      `b. fearless`,
+      `c. brave`,
+      `d. confident`
+    ],
+    answer: 'a',
+    tag:''
+  },
+  {
+    q: `8. What did the elephant do when the lion told his fear?`,
+    opts:[
+      `a. He sympathized the lion`,
+      `b. He felt compassionated`,
+      `c. He mocked the lion`,
+      `d. He understood the lion's feeling`
+    ],
+    answer: 'c',
+    tag:''
+  }
+]; // end quizData
+
+// Remove any items that are passage-only with no options from the flow? 
+// The user asked to include all questions; passages remain as non-interactive text and won't be counted.
+// We'll build a list of interactive items (those with opts.length > 0).
+const interactiveItems = quizData.filter(item => item.opts && item.opts.length > 0);
+const total = interactiveItems.length;
+
+let idx = 0;
+let score = 0;
+
+// DOM refs
+const qcountEl = document.getElementById('qcount');
+const scoreMiniEl = document.getElementById('scoremini');
+const progressBar = document.querySelector('#progress > div');
+const storyTagEl = document.getElementById('storyTag');
+const questionArea = document.getElementById('questionArea');
+const optionsArea = document.getElementById('optionsArea');
+const feedbackEl = document.getElementById('feedback');
+const prevBtn = document.getElementById('prevBtn');
+const skipBtn = document.getElementById('skipBtn');
+const restartBtn = document.getElementById('restartBtn');
+const resultBox = document.getElementById('resultBox');
+const resultScore = document.getElementById('resultScore');
+const resultMsg = document.getElementById('resultMsg');
+
+function render(){
+  // bounds
+  if(idx < 0) idx = 0;
+  if(idx >= total) return showResult();
+
+  const item = interactiveItems[idx];
+  // find original absolute index for display number (we show 1..total)
+  const displayNumber = idx + 1;
+
+  qcountEl.textContent = `Soal ${displayNumber} / ${total}`;
+  scoreMiniEl.textContent = `Skor: ${score}`;
+  progressBar.style.width = ((idx) / total * 100) + '%';
+
+  // show tag if present (using tag from original object if any)
+  storyTagEl.style.display = item.tag ? 'inline-block' : 'none';
+  storyTagEl.textContent = item.tag || '';
+
+  // show question text exactly
+  questionArea.innerHTML = `<div class="question"><strong>${displayNumber}. </strong>${item.q.replace(/\n/g,'<br>')}</div>`;
+
+  // options
+  optionsArea.innerHTML = '';
+  feedbackEl.innerHTML = '';
+
+  item.opts.forEach((optText, i) => {
+    const letter = ['a','b','c','d'][i];
+    const opt = document.createElement('div');
+    opt.className = 'option';
+    opt.setAttribute('data-letter', letter);
+    opt.innerHTML = optText;
+    opt.onclick = () => handleAnswer(letter, opt, item.answer);
+    optionsArea.appendChild(opt);
+  });
+
+  // prev/skip controls
+  prevBtn.style.opacity = idx>0 ? '1' : '0.0';
+  prevBtn.style.pointerEvents = idx>0 ? 'auto' : 'none';
+}
+
+function handleAnswer(letter, element, correct){
+  // disable further clicks
+  const opts = Array.from(document.querySelectorAll('.option'));
+  opts.forEach(o => o.style.pointerEvents = 'none');
+
+  if(letter === correct){
+    element.classList.add('correct');
+    score++;
+    feedbackEl.innerHTML = `<span class="fb-good">Benar! 🎉</span>`;
+  } else {
+    element.classList.add('wrong');
+    feedbackEl.innerHTML = `<span class="fb-bad">Salah — Jawaban benar: <strong>${correct}</strong></span>`;
+    // highlight correct option
+    opts.forEach(o => {
+      if(o.getAttribute('data-letter') === correct){
+        o.classList.add('correct');
+      }
+    });
+  }
+
+  scoreMiniEl.textContent = `Skor: ${score}`;
+
+  // auto next
+  setTimeout(() => {
+    idx++;
+    if(idx >= total){
+      showResult();
+    } else {
+      render();
+    }
+  }, 900);
+}
+
+prevBtn.addEventListener('click', () => {
+  if(idx > 0){
+    idx--;
+    render();
+  }
+});
+skipBtn.addEventListener('click', () => {
+  idx++;
+  if(idx >= total){
+    showResult();
+  } else {
+    render();
+  }
+});
+restartBtn.addEventListener('click', () => {
+  idx = 0;
+  score = 0;
+  restartBtn.style.display = 'none';
+  resultBox.style.display = 'none';
+  render();
+});
+
+function showResult(){
+  // hide question card content
+  document.getElementById('questionArea').innerHTML = '';
+  optionsArea.innerHTML = '';
+  feedbackEl.innerHTML = '';
+  progressBar.style.width = '100%';
+  qcountEl.textContent = `Selesai`;
+  scoreMiniEl.textContent = `Skor: ${score}`;
+  // show result
+  resultBox.style.display = 'block';
+  document.getElementById('resultBox').style.display = 'block';
+  resultScore.textContent = `Hasil: ${score} / ${total}`;
+  const pct = Math.round(score/total*100);
+  let msg = '';
+  if(pct === 100) msg = 'Sempurna! Semua jawaban benar. ✨';
+  else if(pct >= 80) msg = 'Keren! Kamu menguasai banyak soal. 💪';
+  else if(pct >= 60) msg = 'Bagus — masih ada ruang untuk meningkat. 😊';
+  else msg = 'Terus latihan ya — kamu pasti bisa lebih baik lagi! 🌱';
+  resultMsg.textContent = msg;
+  restartBtn.style.display = 'inline-block';
+}
+
+// initial render
+render();
+
+</script>
+</body>
+</html>
